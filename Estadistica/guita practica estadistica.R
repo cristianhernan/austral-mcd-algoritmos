@@ -95,6 +95,32 @@ mfv(sup_implantada_m2)
 # modas = 20 y 22 m2
 
 
+########################## EJERCICIO 4 #####################################
+#En   la   siguiente   tabla   figuran   los   años   de   servicio   acumulados   por   
+#355 trabajadores de una gran empresa antes de su retiro 
+#voluntario.Años de ServicioNúmero de empleados
+#0-3=112
+#3-6=153
+#6-9=42
+#9-12=27
+#12-15=21
+#a)Hallar el promedio de los años de servicios acumulados por los empleados de la empresa y el desvío estándar muestral.
+#b)Obtener lamediana, la moda y los cuartiles.
+#c)Determinar los coeficientes de asimetría y kurtosis.
+library(fdth)
+
+
+set.seed(1)
+x<-sample(c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15), size = 355, replace = TRUE) # Vector de 20 elementos
+data<-fdt(x, k=5)
+
+
+
+
+
+
+
+
 
 
 
