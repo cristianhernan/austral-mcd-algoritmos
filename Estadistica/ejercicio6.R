@@ -27,28 +27,29 @@ data$Fi <- cumsum(data$fi)
 #calculo MARCA DE CLASE xi
 data$Xi <- (data$Li+data$Ls)/2
 data
-#calculo de la frecuencias absolutas  fi
-data$f <-  ((data$fr*n)/100)
+#calculo de la frecuencia relativa
+data$fr <-  ((data$fi*100)/n)
 
 #calculo de las frecuencias relativas actumuladas
-data$Fri <- cumsum(data$fr)
+data$Fr <- cumsum(data$fr)
 
-#calculo MARCA DE CLASE xi
-data$Xi <- (data$Li+data$Ls)/2
 
 #MEDIA ARITMETICA
-#1/n SUM (1 a 7)yi.fi
+#1/n SUM (1 a n)yi.fi
 #calculo el producto entre la marca de clase y la frecuencia de cada elemento
 #para obtener xi.fi
 data$Xi.fi <- (data$Xi*data$fi) 
 #obtengo la media total, haciendo el cociente entre la suma total del xi.fi y la suma total de la fi
 media <- sum(data$Xi.fi)/sum(data$fi)
-
+data
 #MEDIANA 
 #Cuando solamente disponemos de los datos agrupados, la mediana estará dentro del primer intervalo que
 #acumule una frecuencia mayor o igual a n/2
 #Me=li+(li+(n/2-fj-1)/fj)-wj
-mediana <- 2000+(((n/2)-22000)/8000 )*1000
+#n/2= 200 = registro 4
+head(data,4)
+mediana <- 1500+(((n/2)-161)/2000 )*500
+
 
 #VARIANZA
 
