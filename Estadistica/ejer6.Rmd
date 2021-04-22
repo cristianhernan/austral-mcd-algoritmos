@@ -1,0 +1,91 @@
+---
+title: "Ejercicio6"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Ejercicio 6
+
+A continuación, se presenta la distribución de frecuencias de las ventas totales 
+diarias efectuadas por una empresa textil
+
+```{r}
+#limite inferior- ventas en dolares
+li <- c(0,500,1000,1500,2000,2500,3000,3500,4000)
+#limite superior - ventas en dolares
+ls <- c(500,1000,1500,2000,2500,3000,3500,4000,5000)
+#observaciones - cantidad de dias
+fi <- c(30,41,90,74,56,43,36,18,12)
+data <- data.frame('Li'=li,'Ls'=ls, 'fi'=fi)
+print(data)
+```
+a) Determinar analítica y gráficamente el modo, la mediana y los cuartiles.
+b) Calcular la media aritmética y la varianza.
+c) Calcular los deciles de segundo, cuarto y noveno orden.
+d) Calcular la asimetría y la kurtosis.
+
+RESOLUCION:
+A) Moda, mediana y cuartiles
+para la moda necesito primero tener las frecuencias acumuladas
+```{r}
+n <- sum(data$fi)
+data$Fi <- cumsum(data$fi) #creo una nueva columna Fi con el acumulado de las frecuencias
+data
+```
+para la clase usamos la fila de la clase modal, aquella que tiene mas frecuancia.
+Este caso 400/2=200 =fila 4
+Formula de la moda para datos agrupados
+$$
+X_mo = L_i+\frac{d_1}{d_1+d_2}.w_1
+$$
+Donde Li es el límite inferior de la clase modal, d1 es la diferencia entre la frecuencia del intervalo modal y la frecuencia del intervalo anterior, d2 la diferencia entre la frecuencia del intervalo modal y la frecuencia del intervalo posterior y w1 es la amplitud del intervalo modal
+
+```{r}
+int_mo <- 3 #clase modal
+Li <- data[int_mo,'Li']
+d1 <- data[int_mo,'fi'] - data[int_mo-1,'fi']
+d2 <- data[int_mo,'fi'] - data[int_mo+1,'fi']
+w1 <- data[int_mo,'Ls'] - Li
+moda <- Li+(d1/(d1+d2))*w1
+moda
+```
+MEDIANA:
+Cuando solamente disponemos de los datos agrupados, la mediana estará dentro del primer intervalo que
+acumule una frecuencia mayor o igual a 2/n
+$$
+X_me = L_i+\frac{\frac{n}{2}-F_{j-1}}{f_j}.w_j
+$$
+Donde Li es el límite inferior del intervalo que contiene la mediana, n es la cantidad total de observaciones,j1 Fj-1 es la frecuencia acumulada hasta el intervalo anterior, fj es la frecuencia del intervalo, y wj es la amplitud del intervalo.
+
+```{r}
+int_2n <- 4 #intervalo que acumula n/2
+n <- sum(data$fi)
+Li <- data[int_2n,'Li']
+Fj1 <- data[int_2n-1,'Fi']
+fj <- data[int_2n,'fi']
+wj <- data[int_2n,'Ls'] - Li
+mediana <- Li+(((n/2)-Fj1)/fj)*w1
+mediana
+```
+PERCENTILES:
+Cuando solamente disponemos de los datos agrupados, el percentil estará dentro del primer intervalo que
+acumule una frecuencia mayor o igual a (n.k)/100
+$$
+P_k = L_i+\frac{\frac{n.k}{100}-F_{j-1}}{f_j}.w_j
+$$
+Donde Li es el límite inferior del intervalo que contiene la mediana, n es la cantidad total de observaciones,Fj-1 es la frecuencia acumulada hasta el intervalo anterior, fj es la frecuencia del intervalo, y wj es la amplitud del intervalo.
+
+```{r}
+precentil <- function(dt,k) {
+  n <- sum(dt$fi)
+  nk <- (n*k)/100
+  int <- dt[which(dt$Fi>=nk),][1,]
+  index <-  which(dt$Fi>=nk)[1]-1
+  return(int$Li + ((nk-dt[index,'Fi'])/int$fi)*(int$Ls-int$Li))
+}
+paste('p25: ',precentil(data,25),'p75: ',precentil(data,75))
+
+```
