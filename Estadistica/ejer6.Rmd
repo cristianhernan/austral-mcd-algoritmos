@@ -9,8 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Ejercicio 6
 
-A continuación, se presenta la distribución de frecuencias de las ventas totales 
-diarias efectuadas por una empresa textil
+A continuación, se presenta la distribución de frecuencias de las ventas totales diarias efectuadas por una empresa textil
 
 ```{r}
 #limite inferior- ventas en dolares
@@ -35,8 +34,7 @@ n <- sum(data$fi)
 data$Fi <- cumsum(data$fi) #creo una nueva columna Fi con el acumulado de las frecuencias
 data
 ```
-para la clase usamos la fila de la clase modal, aquella que tiene mas frecuancia.
-Este caso 400/2=200 =fila 4
+para la clase usamos la fila de la clase modal, aquella que tiene mas frecuancia. Este caso 400/2=200 =fila 4
 Formula de la moda para datos agrupados
 $$
 X_mo = L_i+\frac{d_1}{d_1+d_2}.w_1
@@ -80,10 +78,10 @@ Donde Li es el límite inferior del intervalo que contiene la mediana, n es la c
 
 ```{r}
 precentil <- function(dt,k) {
-  n <- sum(dt$fi)
+  n <- sum(dt$fi) #se optiene las observaciones totales
   nk <- (n*k)/100
-  int <- dt[which(dt$Fi>=nk),][1,]
-  index <-  which(dt$Fi>=nk)[1]-1
+  int <- dt[which(dt$Fi>=nk),][1,] #se obtiene la row que acumule nk
+  index <-  which(dt$Fi>=nk)[1]-1#se obtiene el 
   return(int$Li + ((nk-dt[index,'Fi'])/int$fi)*(int$Ls-int$Li))
 }
 paste('p25: ',precentil(data,25),'p75: ',precentil(data,75))
