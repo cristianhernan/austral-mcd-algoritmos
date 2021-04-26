@@ -23,16 +23,19 @@ check_packages(packages_needed)
 library(readr)
 library(ggplot2)
 library(plotly)
+library(tidyverse)
 
 #ver la incidencia entre del toque de queda y la grafica que da apple respecto a la mobilidad
 #mo tomar los confirmados, solo la mortalidad.
+applemobilitytrends-2021-04-22.csv
 
+mobility_url <- "https://covid19-static.cdn-apple.com/covid19-mobility-data/2106HotfixDev18/v3/en-us/"
 
-mobility_url <- "https://covid19-static.cdn-apple.com/covid19-mobility-data/2106HotfixDev11/v3/en-us/"
-
-aux        <- paste(mobility_url,"applemobilitytrends-2021-04-16.csv", sep = "")
-mobility   <- read.csv(aux, sep = ",", header = T)
+aux        <- paste(mobility_url,"applemobilitytrends-", sep = "")
+filedate <- paste(aux,as.character(Sys.Date()-2),".csv",sep = "")
+mobility   <- read.csv(filedate, sep = ",", header = T)
 library(readr)
+library(tidyverse)
 
 #########   preparar los datos
 
