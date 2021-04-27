@@ -78,15 +78,46 @@ library(data.table)
 ##################################### leer los datos
 
 # time_series_covid19_confirmed_global.csv    este es el archivo que a leer
-library(tidyr)
-dt <- fread("datasets/Covid19Casos.csv")
-dt2 <- select(dt,fallecido ,fecha_fallecimiento)
-datos <- subset(dt2, fallecido  == "SI" )
-defunciones <- datos %>% group_by(fecha_fallecimiento) %>% summarise(cant = n(fallecido))
+#
 
-head(datos)
-COVID_19_h   <- read.csv("datasets/Covid19Casos.csv", sep = ",", header = T)
-COVID_19_h
+#
+url <- "https://cdn.buenosaires.gob.ar/datosabiertos/datasets/salud/casos-covid-19/"
+archivo <- paste(url,"casos_covid19.csv",sep="")
+library(tidyr)
+covid <- fread(archivo)
+covid <- select(covid,fallecido ,fecha_fallecimiento)
+covid <- subset(covid, fallecido  == "si" )
+covid$fecha_fallecimiento <- as.Date(covid$fecha_fallecimiento, format = "%d%b%Y")
+
+library(dplyr)
+
+covid_muertes <- covid %>% group_by(fecha_fallecimiento) %>% summarise(fallecimientos = n())
+
+head(covid_muertes)
+
+
+mobility_url <- "https://covid19-static.cdn-apple.com/covid19-mobility-data/2106HotfixDev21/v3/en-us/"
+aux        <- paste(mobility_url,"applemobilitytrends-", sep = "")
+filedate <- paste(aux,as.character(Sys.Date()-1),".csv",sep = "")
+mobility   <- read.csv(filedate, sep = ",", header = T)
+
+head(mobility)
+
+
+#el 7 es desde donde tnego que verticalizar, todas las fechas
+mobilityv   <- mobility %>% gather(fecha, tasa    , 7:ncol(mobility))
+mobilityv$fecha <- as.Date(mobilityv$fecha, format = "X%Y.%m.%d")
+
+#  si queremos ver otro pais modificamos aqui
+pais = "Buenos Aires"
+trans = "walking"
+mobilityv <- subset(mobilityv, region == pais & transportation_type == trans)
+#limpio las columnas que no quiero usar
+mobility <-  select( mobilityv, fecha, tasa)
+head(mobility)
+
+summary(mobility)
+summary(covid_muertes)
 
 ################################### preparo los datos
 COVID_19_h$Lat  <- NULL
