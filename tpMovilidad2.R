@@ -9,6 +9,7 @@ url <- "https://cdn.buenosaires.gob.ar/datosabiertos/datasets/salud/casos-covid-
 archivo <- paste(url,"casos_covid19.csv",sep="")
 covid <- fread(archivo)
 covid <- subset(covid, fallecido  == "si" )
+summary(covid)
 covid <- select(covid,fallecido ,fecha_fallecimiento)
 covid$fecha_fallecimiento <- as.Date(covid$fecha_fallecimiento, format = "%d%b%Y")
 
