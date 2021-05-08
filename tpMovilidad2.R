@@ -2,18 +2,19 @@ library(grid)
 library(data.table)
 library(tidyr)
 library(dplyr)
+library(plotly)
 
 
 url <- "https://cdn.buenosaires.gob.ar/datosabiertos/datasets/salud/casos-covid-19/"
 archivo <- paste(url,"casos_covid19.csv",sep="")
 covid <- fread(archivo)
-covid <- select(covid,fallecido ,fecha_fallecimiento)
 covid <- subset(covid, fallecido  == "si" )
+covid <- select(covid,fallecido ,fecha_fallecimiento)
 covid$fecha_fallecimiento <- as.Date(covid$fecha_fallecimiento, format = "%d%b%Y")
 
 covid_muertes <- covid %>% group_by(fecha_fallecimiento) %>% summarise(fallecimientos = n())
 
-mobility_url <- "https://covid19-static.cdn-apple.com/covid19-mobility-data/2106HotfixDev23/v3/en-us/"
+mobility_url <- "https://covid19-static.cdn-apple.com/covid19-mobility-data/2107HotfixDev10/v3/en-us/"
 aux        <- paste(mobility_url,"applemobilitytrends-", sep = "")
 filedate <- paste(aux,as.character(Sys.Date()-1),".csv",sep = "")
 mobility   <- read.csv(filedate, sep = ",", header = T)
@@ -33,7 +34,7 @@ mobility[mobility$fecha=='2020-05-11','tasa'] <-  mean(mobility[(mobility$fecha 
 mobility[mobility$fecha=='2020-05-12','tasa'] <-  mean(mobility[(mobility$fecha >= '2020-05-05' & mobility$fecha <= '2020-05-10'),'tasa' ])
 mobility[mobility$fecha=='2021-03-12','tasa'] <-  mean(mobility[(mobility$fecha >= '2021-03-13' & mobility$fecha <= '2021-05-16'),'tasa' ])
 
-setnames(covid_muertes , old = c( "fecha_fallecimiento" ), new = c( "fecha"))
+#setnames(covid_muertes , old = c( "fecha_fallecimiento" ), new = c( "fecha"))
 
 dt <- merge(covid_muertes,mobility)
 
@@ -43,8 +44,9 @@ dt <- merge(covid_muertes,mobility)
 #                 xlab='tasa', las=1,
 #                 ylab='fallecimientos'))
 
-pal <- c("red", "blue")
-fig <- plot_ly(data=dt, x=dt$fecha,colors=pal)
+
+
+fig <- plot_ly(data=dt, x=dt$fechal)
 fig <- fig %>% add_trace(y = dt$fallecimientos, name = 'fallecimientos',mode = 'lines')
 fig <- fig %>% add_trace(y = ~dt$tasa, name = 'mobilidad', mode = 'lines')
 fig <- fig %>% layout(
