@@ -3,15 +3,20 @@ library(data.table)
 library(tidyr)
 library(dplyr)
 library(plotly)
+library(stringr)
 
 
 url <- "https://cdn.buenosaires.gob.ar/datosabiertos/datasets/salud/casos-covid-19/"
 archivo <- paste(url,"casos_covid19.csv",sep="")
-covid <- fread(archivo)
-covid <- subset(covid, fallecido  == "si" )
-summary(covid)
-covid <- select(covid,fallecido ,fecha_fallecimiento)
-covid$fecha_fallecimiento <- as.Date(covid$fecha_fallecimiento, format = "%d%b%Y")
+covid_raw <- fread(archivo)
+covid <- subset(covid_raw, fallecido  == "si" )
+
+covid<- covid[,c("fallecido","fecha_fallecimiento")]
+#covid <- select(covid,fallecido ,fecha_fallecimiento)
+covid$fecha_fallecimiento <-str_replace(covid$fecha_fallecimiento,':00:00:00.000000','')
+
+covid$fecha_fallecimiento <- as.Date(str_replace(covid$fecha_fallecimiento,':00:00:00.000000',''), format = "%d%b%Y")
+
 
 covid_muertes <- covid %>% group_by(fecha_fallecimiento) %>% summarise(fallecimientos = n())
 
